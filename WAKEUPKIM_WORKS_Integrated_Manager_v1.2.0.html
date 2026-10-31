@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#20242a">
+<title>WAKEUPKIM WORKS | 통합업무관리</title>
+<style>
+:root{
+  --ink:#222;--muted:#777;--line:#e5e5e5;--paper:#fff;
+  --bg:#fff;--accent:#F47B20;--soft:#fafafa;--green:#2E7D32;
+  --yellow:#A66A16;--red:#C62828;--radius:4px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;font-size:14px;line-height:1.55}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{max-width:1440px;margin:auto;min-height:100vh}
+header{background:#fff;color:var(--ink);padding:0 18px;min-height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand-area{display:flex;align-items:center;gap:9px;min-width:0}
+.brand-logo{display:inline-flex;align-items:stretch;flex-shrink:0;overflow:hidden;border-radius:6px;box-shadow:0 4px 15px rgba(0,0,0,.08);font-size:15px;font-weight:800;line-height:1;letter-spacing:0}
+.logo-left,.logo-right{display:flex;align-items:center;color:#fff;letter-spacing:0}
+.logo-left{background:#1F1F1F;padding:8px 3px 8px 11px}
+.logo-right{background:#F47B20;padding:8px 11px 8px 3px}
+.brand-meta{min-width:0}.brand-meta small{display:block;color:#777;font-size:10px;font-weight:500;letter-spacing:.6px;margin-top:2px}
+.header-version{color:#999;font-size:11px;white-space:nowrap}
+.brand{font-weight:800;letter-spacing:0;font-size:19px}
+.brand small{display:block;color:#aeb4bb;font-size:10px;font-weight:500;letter-spacing:1.2px;margin-top:2px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+main{padding:14px 18px 35px;max-width:1600px;margin:0 auto;width:100%}
+.tabs{display:flex;gap:5px;overflow:auto;border-bottom:1px solid var(--line);margin-bottom:22px}
+.tab{border:0;background:transparent;padding:12px 15px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
+.tab.active{color:var(--ink);border-color:var(--accent);font-weight:700}
+.view{display:none}.view.active{display:block}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:18px}
+h1{font-size:23px;margin:0 0 4px}h2{font-size:16px;margin:0 0 13px}
+.sub{color:var(--muted);font-size:12px}
+.grid{display:grid;gap:13px}.stats{grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:15px}
+.stat-label{font-size:12px;color:var(--muted)}.stat-num{font-size:29px;font-weight:750;margin-top:4px}
+.two{grid-template-columns:1.1fr .9fr}
+.project-grid{grid-template-columns:repeat(3,1fr)}
+.project{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.project strong{display:block}.project small{color:var(--muted)}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:8px 12px}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.danger{color:var(--red)}
+.btn.small{font-size:12px;padding:5px 9px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+label{display:block;font-size:12px;font-weight:700;margin:0 0 5px}
+input,select,textarea{width:100%;border:1px solid #d9dde2;border-radius:8px;padding:9px 10px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input[type="checkbox"]{accent-color:var(--accent)}
+textarea{min-height:95px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.field.full{grid-column:1/-1}
+.field-row{display:flex;gap:10px;align-items:end}
+.field-row>*{flex:1}
+.form-actions{display:flex;gap:8px;margin-top:14px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;color:var(--muted);background:#fafafa;white-space:nowrap}
+td{font-size:13px}tr:last-child td{border-bottom:0}
+.status{display:inline-block;border-radius:30px;padding:3px 8px;font-size:11px;font-weight:700;background:#eef0f2;color:#59616a}
+.status.done{background:#e8f4ed;color:var(--green)}.status.progress{background:#fff4df;color:var(--yellow)}.status.hold{background:#fbeaea;color:var(--red)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.toolbar>*{max-width:210px}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.report{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;min-height:300px;white-space:pre-wrap;line-height:1.75;font-size:13px}
+.notice{font-size:12px;color:var(--muted);margin-top:10px}
+.section-gap{margin-top:18px}
+footer{text-align:center;color:#999;font-size:11px;padding:16px;border-top:1px solid var(--line)}
+.hidden{display:none!important}
+hr{border:0;border-top:1px solid var(--line);margin:17px 0}
+.modal-backdrop{position:fixed;inset:0;background:#10182088;display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal-backdrop.show{display:flex}
+.modal{background:#fff;border:1px solid var(--line);border-radius:4px;padding:20px;max-width:650px;width:100%;max-height:90vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+@media(max-width:800px){
+ main{padding:16px 13px 35px}header{padding:14px}
+ .stats{grid-template-columns:repeat(2,1fr)}.two,.project-grid{grid-template-columns:1fr}
+ .page-head{align-items:flex-start;flex-direction:column}h1{font-size:20px}
+}
+@media(max-width:520px){
+ .form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
+ .header-actions .btn{padding:6px 8px;font-size:11px}
+ .brand{font-size:16px}.brand-logo{font-size:12px}.logo-left{padding:7px 2px 7px 8px}.logo-right{padding:7px 8px 7px 2px}.stats{gap:8px}.card{padding:13px}
+ .stat-num{font-size:24px}
+}
+@media print{
+ body{background:#fff;font-size:11pt}
+ header,.tabs,.no-print,footer{display:none!important}
+ main{padding:0;max-width:none}
+ .view{display:none!important}#reports.view.active{display:block!important}
+ #reports .page-head,#reports .report-controls{display:none!important}
+ .report{border:0;padding:0;white-space:pre-wrap;font-size:10.5pt;line-height:1.65}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand-area">
+    <div class="brand-logo" aria-label="WAKEUPKIM WORKS"><span class="logo-left">WAKEUP</span><span class="logo-right">KIM</span></div>
+    <div class="brand-meta"><strong>WORKS</strong><small>INTEGRATED WORK MANAGEMENT</small></div>
+    <span class="header-version" id="appVersion">v1.2.0</span>
+  </div>
+  <div class="header-actions no-print">
+    <button class="btn small" id="hubBtn" type="button">HUB</button>
+    <button class="btn small" id="resetBtn" type="button">RESET</button>
+    <button class="btn small" id="versionBtn" type="button">VERSION</button>
+    <button class="btn small" id="infoBtn" type="button">INFO</button>
+    <button class="btn small" id="checkBtn" type="button">RULE CHECK</button>
+    <button class="btn small" id="exportBtn" type="button">JSON 백업</button>
+    <button class="btn small" id="importBtn" type="button">백업 복원</button>
+    <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+  </div>
+</header>
+<main>
+<nav class="tabs no-print" aria-label="주 메뉴">
+  <button class="tab active" data-view="dashboard">대시보드</button>
+  <button class="tab" data-view="entries">업무 기록</button>
+  <button class="tab" data-view="aiinput">AI 자동입력</button>
+  <button class="tab" data-view="projects">프로젝트</button>
+  <button class="tab" data-view="reports">업무보고</button>
+  <button class="tab" data-view="settings">설정·백업</button>
+</nav>
+
+<section id="dashboard" class="view active">
+  <div class="page-head"><div><h1>통합 업무관리</h1><div class="sub" id="todayLabel"></div></div><button class="btn accent no-print" id="quickAdd">+ 업무 기록</button></div>
+  <div class="grid stats">
+    <div class="card"><div class="stat-label">전체 업무</div><div class="stat-num" id="statAll">0</div></div>
+    <div class="card"><div class="stat-label">진행 중</div><div class="stat-num" id="statProgress">0</div></div>
+    <div class="card"><div class="stat-label">완료</div><div class="stat-num" id="statDone">0</div></div>
+    <div class="card"><div class="stat-label">오늘 등록</div><div class="stat-num" id="statToday">0</div></div>
+  </div>
+  <div class="grid two">
+    <div class="card"><h2>최근 업무</h2><div id="recentList"></div></div>
+    <div class="card"><h2>프로젝트별 업무 현황</h2><div id="projectSummary"></div></div>
+  </div>
+  <div class="card section-gap"><h2>운영 원칙</h2><div class="sub">실제 수행한 업무만 기록합니다. 아이디어·검토·실행·완료를 구분하고, 동일 업무는 중복 등록하지 않습니다. 브라우저 데이터는 해당 기기에 저장되므로 정기적으로 JSON 백업을 보관하세요.</div></div>
+</section>
+
+<section id="entries" class="view">
+  <div class="page-head"><div><h1>업무 기록</h1><div class="sub">AI별 작업과 실제 수행 업무를 날짜·프로젝트 기준으로 통합합니다.</div></div><button class="btn accent no-print" id="addEntry">+ 새 업무 등록</button></div>
+  <div class="toolbar no-print">
+    <input id="searchEntries" placeholder="업무명·내용 검색">
+    <select id="filterProject"><option value="">전체 프로젝트</option></select>
+    <select id="filterStatus"><option value="">전체 상태</option><option>예정</option><option>진행</option><option>완료</option><option>보류</option></select>
+    <input type="date" id="filterDate">
+    <button class="btn" id="clearFilters">초기화</button>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>날짜</th><th>프로젝트</th><th>업무</th><th>상태</th><th>출처</th><th class="no-print">관리</th></tr></thead><tbody id="entriesBody"></tbody></table><div id="entriesEmpty" class="empty hidden">등록된 업무가 없습니다.</div></div>
+</section>
+
+<section id="aiinput" class="view">
+  <div class="page-head"><div><h1>AI 데이터 자동입력</h1><div class="sub">AI 대화 요약 또는 정형화된 업무 텍스트를 붙여넣고, 미리보기 후 여러 건을 한 번에 등록합니다.</div></div></div>
+  <div class="card no-print">
+    <div class="field-row">
+      <div><label for="aiSource">작업 출처</label><select id="aiSource"><option>ChatGPT</option><option>Gemini</option><option>Claude</option><option>직접 수행</option><option>기타</option></select></div>
+      <div><label for="aiDefaultDate">기본 업무 날짜</label><input type="date" id="aiDefaultDate"></div>
+    </div>
+    <div class="section-gap"><label for="aiRawInput">AI 작업 내용 붙여넣기</label><textarea id="aiRawInput" style="min-height:220px" placeholder="AI가 정리한 업무 내용을 여기에 붙여넣으세요. 여러 업무는 [업무 기록]으로 구분할 수 있습니다."></textarea></div>
+    <div class="actions section-gap">
+      <button class="btn" id="copyAiPrompt">AI 정리 지시문 복사</button>
+      <button class="btn primary" id="parseAiInput">내용 분석 및 미리보기</button>
+      <button class="btn" id="clearAiInput">비우기</button>
+    </div>
+    <div class="notice">외부 AI API를 호출하지 않습니다. 이 앱은 붙여넣은 텍스트의 항목명과 형식을 기준으로 분리합니다. 자유로운 대화 원문은 먼저 AI 정리 지시문으로 정리한 뒤 결과를 붙여넣는 것을 권장합니다.</div>
+  </div>
+  <div class="card section-gap hidden" id="aiPreviewCard">
+    <div class="page-head"><div><h2>등록 전 미리보기</h2><div class="sub" id="aiPreviewSummary"></div></div><div class="actions no-print"><button class="btn" id="selectAllAi">전체 선택</button><button class="btn" id="deselectAllAi">전체 해제</button><button class="btn accent" id="saveAiEntries">선택 항목 일괄 등록</button></div></div>
+    <div id="aiPreviewList"></div>
+    <div class="notice">자동 분류 결과를 확인하세요. 업무명·프로젝트·날짜가 잘못 추정되었으면 원본 텍스트를 수정해 다시 분석하는 것이 안전합니다. 중복 가능성이 있는 기록은 표시됩니다.</div>
+  </div>
+</section>
+
+<section id="projects" class="view">
+  <div class="page-head"><div><h1>프로젝트 관리</h1><div class="sub">기본 프로젝트 코드를 기준으로 업무를 분류합니다.</div></div><button class="btn accent no-print" id="addProject">+ 프로젝트 추가</button></div>
+  <div class="grid project-grid" id="projectCards"></div>
+  <p class="notice">기본 프로젝트는 삭제할 수 없습니다. 사용자 추가 프로젝트는 해당 업무 기록이 없을 때 삭제할 수 있습니다.</p>
+</section>
+
+<section id="reports" class="view">
+  <div class="page-head"><div><h1>업무보고</h1><div class="sub">선택한 기간의 실제 업무 기록을 보고서로 정리합니다.</div></div></div>
+  <div class="card report-controls no-print">
+    <div class="field-row">
+      <div><label for="reportType">보고서 유형</label><select id="reportType"><option value="daily">일일 업무보고</option><option value="weekly">주간 업무보고</option><option value="monthly">월간 업무보고</option><option value="custom">기간 지정</option></select></div>
+      <div><label for="reportDate">기준 날짜</label><input type="date" id="reportDate"></div>
+    </div>
+    <div class="field-row section-gap hidden" id="customDates">
+      <div><label for="reportStart">시작일</label><input type="date" id="reportStart"></div>
+      <div><label for="reportEnd">종료일</label><input type="date" id="reportEnd"></div>
+    </div>
+    <div class="actions section-gap">
+      <button class="btn primary" id="generateReport">보고서 생성</button>
+      <button class="btn" id="copyReport">텍스트 복사</button>
+      <button class="btn" id="downloadTxt">TXT 저장</button>
+      <button class="btn" id="printReport">PDF 출력</button>
+    </div>
+    <div class="notice">PDF 출력 버튼을 누른 뒤 인쇄 창에서 'PDF로 저장'을 선택하세요.</div>
+  </div>
+  <div class="report section-gap" id="reportOutput">보고서 유형과 날짜를 선택한 뒤 '보고서 생성'을 누르세요.</div>
+</section>
+
+<section id="settings" class="view">
+  <div class="page-head"><div><h1>설정 및 데이터 관리</h1><div class="sub">데이터는 이 브라우저에 저장됩니다.</div></div></div>
+  <div class="grid two">
+    <div class="card">
+      <h2>데이터 백업 및 복원</h2>
+      <p class="sub">업무 기록과 프로젝트 설정을 JSON 파일 하나로 내보내거나 복원합니다.</p>
+      <div class="actions"><button class="btn primary" id="settingsExport">JSON 백업 다운로드</button><button class="btn" id="settingsImport">JSON 파일 가져오기</button></div>
+      <hr><div class="sub" id="storageInfo"></div>
+    </div>
+    <div class="card">
+      <h2>데이터 초기화</h2>
+      <p class="sub">초기화하면 현재 브라우저에 저장된 업무 기록과 사용자 프로젝트가 삭제됩니다. 실행 전 JSON 백업을 권장합니다.</p>
+      <button class="btn danger" id="resetData">전체 데이터 초기화</button>
+    </div>
+  </div>
+  <div class="card section-gap"><h2>저장 및 보안 안내</h2>
+    <ul class="sub">
+      <li>저장 위치: 현재 브라우저의 localStorage</li>
+      <li>브라우저 데이터 삭제·초기화 시 업무 기록이 사라질 수 있습니다.</li>
+      <li>다른 기기와 자동 동기화되지 않습니다. 기기 간 이동은 JSON 백업 파일을 사용하세요.</li>
+      <li>민감한 개인정보, 비밀번호, 결제정보는 기록하지 마세요.</li>
+      <li>이 앱은 외부 서버로 데이터를 전송하지 않습니다.</li>
+    </ul>
+  </div>
+</section>
+</main>
+<footer><span id="footerSignature">MADE BY WAKEUPKIM · WAKEUPKIM WEB APP MASTER TEMPLATE v1.1.0</span></footer>
+</div>
+
+<div class="modal-backdrop" id="entryModal">
+ <div class="modal">
+  <div class="modal-head"><h2 id="entryModalTitle">새 업무 등록</h2><button class="btn small" id="closeEntry">닫기</button></div>
+  <form id="entryForm">
+   <input type="hidden" id="entryId">
+   <div class="form-grid">
+    <div class="field"><label for="entryDate">업무 날짜 *</label><input type="date" id="entryDate" required></div>
+    <div class="field"><label for="entryProject">프로젝트 *</label><select id="entryProject" required></select></div>
+    <div class="field full"><label for="entryTitle">업무명 *</label><input id="entryTitle" required maxlength="120" placeholder="실제 수행한 업무를 간결하게 입력"></div>
+    <div class="field"><label for="entryStatus">진행 상태</label><select id="entryStatus"><option>예정</option><option>진행</option><option>완료</option><option>보류</option></select></div>
+    <div class="field"><label for="entrySource">작업 출처</label><select id="entrySource"><option>ChatGPT</option><option>Gemini</option><option>Claude</option><option>직접 수행</option><option>기타</option></select></div>
+    <div class="field full"><label for="entryDetail">세부 수행 내용</label><textarea id="entryDetail" placeholder="실제 수행 내용, 검토 사항, 결과 등을 기록"></textarea></div>
+    <div class="field full"><label for="entryResult">주요 성과 / 결과</label><textarea id="entryResult" placeholder="완성한 결과물이나 확인된 성과"></textarea></div>
+    <div class="field full"><label for="entryNext">후속 작업</label><textarea id="entryNext" placeholder="미완료 사항이나 다음에 진행할 일"></textarea></div>
+    <div class="field full"><label for="entryLocation">원본 위치 (선택)</label><input id="entryLocation" placeholder="대화 제목, URL, 파일 경로 등 필요할 때 찾을 수 있는 위치"></div>
+   </div>
+   <div class="form-actions"><button class="btn primary" type="submit">저장</button><button class="btn" type="button" id="cancelEntry">취소</button></div>
+  </form>
+ </div>
+</div>
+
+<div class="modal-backdrop" id="projectModal">
+ <div class="modal">
+  <div class="modal-head"><h2>프로젝트 추가</h2><button class="btn small" id="closeProject">닫기</button></div>
+  <form id="projectForm">
+   <div class="form-grid">
+    <div class="field"><label for="projectCode">프로젝트 코드 *</label><input id="projectCode" required maxlength="12" placeholder="P10"></div>
+    <div class="field"><label for="projectName">프로젝트명 *</label><input id="projectName" required maxlength="60"></div>
+    <div class="field full"><label for="projectDesc">설명</label><input id="projectDesc" maxlength="160"></div>
+   </div>
+   <div class="form-actions"><button class="btn primary" type="submit">추가</button><button class="btn" type="button" id="cancelProject">취소</button></div>
+  </form>
+ </div>
+</div>
+
+<div class="modal-backdrop" id="masterModal">
+ <div class="modal">
+  <div class="modal-head"><h2 id="masterModalTitle">INFO</h2><button class="btn small" id="closeMasterModal" type="button">닫기</button></div>
+  <div id="masterModalBody" class="sub"></div>
+ </div>
+</div>
+<div class="modal-backdrop" id="versionModal">
+ <div class="modal">
+  <div class="modal-head"><h2>VERSION MANAGEMENT</h2><button class="btn small" id="closeVersionModal" type="button">닫기</button></div>
+  <div class="field"><label>현재 앱 버전</label><div id="currentVersion" style="font-size:24px;font-weight:800;color:#F47B20">1.2.0</div></div>
+  <div class="field"><label>버전 증가 유형</label><div class="actions"><button class="btn" data-version="major">MAJOR +1</button><button class="btn" data-version="minor">MINOR +1</button><button class="btn" data-version="patch">PATCH +1</button></div></div>
+  <div class="field"><label>변경 후 버전</label><strong id="nextVersion">1.1.1</strong></div>
+  <div class="field"><label for="versionReason">변경 사유 *</label><textarea id="versionReason" placeholder="이번 버전에서 변경한 내용을 입력하세요."></textarea></div>
+  <div class="notice">버전 변경 이력은 브라우저에 저장됩니다. 앱 파일의 실제 배포 버전은 별도로 관리합니다.</div>
+  <div class="form-actions"><button class="btn primary" id="applyVersion" type="button">버전 적용</button></div>
+ </div>
+</div>
+<script>
+(() => {
+"use strict";
+const KEY="wakeupkim_work_manager_v1";
+const defaults=[
+ ["P01","WAKEUPKIM / YM WORKS","브랜드·홈페이지·디자인"],
+ ["P02","BASEBALL GLOVE STORY / 글러브이야기","글러브 콘텐츠·블로그·커뮤니티"],
+ ["P03","콘텐츠 사업 및 AI 교육","콘텐츠 제작·교육·마케팅"],
+ ["P04","MOMO 캐릭터 IP","캐릭터·상품·브랜드"],
+ ["P05","쓸모생각","에세이·출판·펀딩"],
+ ["P06","온라인 판매 및 해외 판매","온라인 스토어·eBay"],
+ ["P07","AI 활용 및 업무 자동화","AI 도구·업무 시스템"],
+ ["P08","랜디벗 및 외부 협업","외부 콘텐츠·협업 업무"],
+ ["P09","음악 및 음원 활동","음원·창작·유통"]
+].map(([code,name,desc])=>({code,name,desc,builtIn:true}));
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString("en-CA");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+let data=load();
+function load(){
+ try{const v=JSON.parse(localStorage.getItem(KEY));if(v&&Array.isArray(v.entries)&&Array.isArray(v.projects))return v;}catch(e){}
+ return {version:1,entries:[],projects:defaults.map(x=>({...x}))};
+}
+const MASTER_CONFIG={
+ schema:"WAKEUPKIM-WEBAPP-1.2",
+ source:{brand:"WAKEUPKIM",signature:"MADE BY WAKEUPKIM",template:"WAKEUPKIM WEB APP MASTER TEMPLATE",templateVersion:"1.1.0",license:"Open Use / Free Modification / Free Redistribution"},
+ app:{id:"wakeupkim-integrated-work-manager",name:"WAKEUPKIM WORKS",nameKo:"통합업무관리",version:"1.2.0",category:"BUSINESS",description:"AI별 업무 기록 통합, 붙여넣기 기반 자동 분류 및 프로젝트·일일·주간·월간 업무보고 관리",status:"BETA"},
+ development:{created:"2026-11-01",updated:"2026-11-01",aiUsed:["ChatGPT"]},
+ ai:{runtimeAI:false,providerIndependent:true},api:{required:false},
+ hub:{compatible:true,standalone:true,interfaceVersion:"1.0",url:""},
+ rules:{singleFile:true,minimalDependencies:true,friendlyErrorMessages:true,semanticVersioning:true,versionManager:true,compressedLogo:true},
+ ad:{enabled:false}
+};
+const VERSION_KEY="wakeupkim_work_manager_version";
+const CHANGELOG_KEY="wakeupkim_work_manager_changelog";
+const versionStore={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+let appVersion=versionStore.get(VERSION_KEY,{version:MASTER_CONFIG.app.version}).version;
+if(parseFloat(appVersion)<1.2) { appVersion=MASTER_CONFIG.app.version; versionStore.set(VERSION_KEY,{version:appVersion,updatedAt:new Date().toISOString()}); }
+function parseVersion(v){const m=String(v).match(/^(\d+)\.(\d+)\.(\d+)$/);if(!m)throw new Error("버전은 MAJOR.MINOR.PATCH 형식이어야 합니다.");return m.slice(1).map(Number);}
+function incrementVersion(v,t){let [a,b,c]=parseVersion(v);if(t==="major"){a++;b=0;c=0}else if(t==="minor"){b++;c=0}else if(t==="patch"){c++}else throw new Error("잘못된 버전 유형입니다.");return `${a}.${b}.${c}`;}
+let selectedVersionType="patch";
+function versionHistory(){return versionStore.get(CHANGELOG_KEY,[]);}
+function updateVersionUI(){$("appVersion").textContent="v"+appVersion;$("currentVersion").textContent=appVersion;$("footerSignature").textContent=MASTER_CONFIG.source.signature+" · "+MASTER_CONFIG.source.template+" v"+MASTER_CONFIG.source.templateVersion+" · APP v"+appVersion;}
+function previewVersion(){$("nextVersion").textContent=incrementVersion(appVersion,selectedVersionType);}
+function openVersion(){selectedVersionType="patch";$("versionReason").value="";previewVersion();updateVersionUI();$("versionModal").classList.add("show");}
+function applyVersion(){const reason=$("versionReason").value.trim();if(!reason){alert("변경 사유를 입력하세요.");return;}const next=incrementVersion(appVersion,selectedVersionType);if(!confirm(`앱 버전을 ${appVersion}에서 ${next}로 변경할까요?`))return;const h=versionHistory();h.unshift({version:next,previousVersion:appVersion,type:selectedVersionType.toUpperCase(),reason,date:new Date().toISOString()});if(!versionStore.set(CHANGELOG_KEY,h)||!versionStore.set(VERSION_KEY,{version:next,updatedAt:new Date().toISOString()})){alert("버전 정보를 저장하지 못했습니다.");return;}appVersion=next;updateVersionUI();$("versionModal").classList.remove("show");alert("버전 이력을 저장했습니다. 배포 파일명과 CHANGELOG도 함께 갱신하세요.");}
+function openMasterInfo(){
+ const history=versionHistory(),rows=[
+ ["앱 이름",MASTER_CONFIG.app.name+" / "+MASTER_CONFIG.app.nameKo],
+ ["앱 ID",MASTER_CONFIG.app.id],["앱 버전",appVersion],["상태",MASTER_CONFIG.app.status],
+ ["기반 템플릿",MASTER_CONFIG.source.template+" v"+MASTER_CONFIG.source.templateVersion],
+ ["저장 방식","LocalStorage + JSON 백업"],["외부 API","사용하지 않음 · 붙여넣기 기반 자동 분석"],["HUB","호환 인터페이스 제공 · 단독 실행 가능"],
+ ["개발일",MASTER_CONFIG.development.created],["라이선스",MASTER_CONFIG.source.license]
+ ];
+ $("masterModalTitle").textContent="WEB APP INFO";
+ $("masterModalBody").innerHTML="<table style='width:100%;border-collapse:collapse'>"+rows.map(r=>`<tr><td style='padding:7px;border-bottom:1px solid #eee;width:34%;color:#777'>${esc(r[0])}</td><td style='padding:7px;border-bottom:1px solid #eee'>${esc(r[1])}</td></tr>`).join("")+"</table><h3 style='margin-top:18px'>CHANGELOG</h3><p><b>1.2.0</b> · AI 데이터 붙여넣기 분석, 프로젝트·날짜·상태 자동 분류, 미리보기 및 일괄 등록.</p><p><b>1.1.0</b> · WAKEUPKIM WEB APP MASTER TEMPLATE v1.1.0 적용, 압축형 로고·INFO·RULE CHECK·RESET·HUB·SemVer 버전관리 적용.</p><p><b>1.0.0</b> · 통합업무관리 기본 기능 및 보고서 생성.</p>"+(history.length?"<h3>APP VERSION HISTORY</h3>"+history.map(x=>`<p><b>${esc(x.version)}</b> · ${esc(x.type)} · ${esc(String(x.date).slice(0,10))}<br>${esc(x.reason)}</p>`).join(""):"");
+ $("masterModal").classList.add("show");
+}
+function runRuleCheck(){
+ const checks=[
+ ["단일 HTML 파일",!document.querySelector('script[src],link[rel="stylesheet"]')],
+ ["외부 라이브러리 의존성 없음",true],
+ ["API 키 하드코딩 없음",!/(AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9]{20,})/.test(document.documentElement.innerHTML)],
+ ["필수 앱 메타데이터",!!MASTER_CONFIG.app.id&&!!MASTER_CONFIG.app.name&&!!MASTER_CONFIG.app.version],
+ ["Semantic Versioning",/^\d+\.\d+\.\d+$/.test(appVersion)],
+ ["HUB 인터페이스",typeof window.WEB_APP_HUB?.getMetadata==="function"],
+ ["반응형 viewport",!!document.querySelector('meta[name="viewport"]')],
+ ["압축형 WAKEUPKIM 로고",!!document.querySelector(".brand-logo .logo-left")&&!!document.querySelector(".brand-logo .logo-right")],
+ ["JSON 백업·복원",typeof exportJSON==="function"],
+ ["AI 자동입력 분석",typeof parseAIText==="function"],
+ ["AI 자동입력 미리보기·일괄등록",!!$("saveAiEntries")],
+ ["보고서 TXT·PDF 기능",!!$("downloadTxt")&&!!$("printReport")],
+ ["광고 비활성",MASTER_CONFIG.ad.enabled===false],
+ ["브라우저 저장소",typeof localStorage!=="undefined"]
+ ];
+ $("masterModalTitle").textContent="MASTER RULE CHECK";
+ $("masterModalBody").innerHTML="<table style='width:100%;border-collapse:collapse'>"+checks.map(c=>`<tr><td style='padding:8px;border-bottom:1px solid #eee'>${esc(c[0])}</td><td style='padding:8px;border-bottom:1px solid #eee;color:${c[1]?"#2E7D32":"#C62828"}'>${c[1]?"✓ 통과":"✕ 확인 필요"}</td></tr>`).join("")+"</table><p style='margin-top:12px'>수동 확인 필요: 업무 등록·수정·삭제, JSON 복원, A4 PDF 출력, 모바일 화면, 브라우저 재실행 후 데이터 유지.</p>";
+ $("masterModal").classList.add("show");
+}
+function resetInterface(){
+ if(!confirm("입력·검색 조건과 화면 상태만 초기화할까요? 저장된 업무 기록은 삭제되지 않습니다."))return;
+ ["searchEntries","filterProject","filterStatus","filterDate"].forEach(id=>$(id).value="");
+ renderEntries();showView("dashboard");alert("화면과 검색 조건을 초기화했습니다. 저장된 업무 기록은 유지됩니다.");
+}
+window.WAKEUPKIM_APP={getMetadata:()=>({...JSON.parse(JSON.stringify(MASTER_CONFIG)),app:{...MASTER_CONFIG.app,version:appVersion}}),getAppId:()=>MASTER_CONFIG.app.id,getVersion:()=>appVersion,getStatus:()=>MASTER_CONFIG.app.status};
+window.WEB_APP_HUB=window.WAKEUPKIM_APP;
+window.WAKEUPKIM_MASTER={version:MASTER_CONFIG.source.templateVersion};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));renderAll();return true;}catch(e){alert("브라우저 저장 공간이 부족하거나 저장이 차단되었습니다. JSON 백업 후 불필요한 데이터를 정리해 주세요.");return false;}}
+function project(code){return data.projects.find(p=>p.code===code)?.name||code||"미분류";}
+function statusClass(s){return s==="완료"?"done":s==="진행"?"progress":s==="보류"?"hold":"";}
+function showView(id){
+ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+ if(id==="reports")generateReport();
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+function populateProjects(){
+ const opts=data.projects.map(p=>`<option value="${esc(p.code)}">${esc(p.code)} · ${esc(p.name)}</option>`).join("");
+ $("entryProject").innerHTML=opts;
+ $("filterProject").innerHTML='<option value="">전체 프로젝트</option>'+opts;
+}
+function renderDashboard(){
+ const es=data.entries;
+ $("statAll").textContent=es.length;
+ $("statProgress").textContent=es.filter(e=>e.status==="진행").length;
+ $("statDone").textContent=es.filter(e=>e.status==="완료").length;
+ $("statToday").textContent=es.filter(e=>e.date===today()).length;
+ $("todayLabel").textContent=new Date().toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"});
+ const recent=[...es].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.updated||0)-(a.updated||0)).slice(0,6);
+ $("recentList").innerHTML=recent.length?recent.map(e=>`<div style="padding:9px 0;border-bottom:1px solid var(--line)"><div style="display:flex;justify-content:space-between;gap:8px"><strong>${esc(e.title)}</strong><span class="status ${statusClass(e.status)}">${esc(e.status)}</span></div><div class="sub">${esc(e.date)} · ${esc(e.project)} · ${esc(project(e.project))}</div></div>`).join(""):'<div class="empty">아직 등록된 업무가 없습니다.</div>';
+ $("projectSummary").innerHTML=data.projects.map(p=>{
+ const n=es.filter(e=>e.project===p.code).length,done=es.filter(e=>e.project===p.code&&e.status==="완료").length;
+ return `<div style="padding:7px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px"><span><strong>${esc(p.code)}</strong> ${esc(p.name)}</span><span class="sub">${n}건 · 완료 ${done}</span></div>`;
+ }).join("");
+}
+function filteredEntries(){
+ const q=$("searchEntries").value.trim().toLowerCase(),p=$("filterProject").value,s=$("filterStatus").value,d=$("filterDate").value;
+ return [...data.entries].filter(e=>(!q||[e.title,e.detail,e.result,e.next,e.location,e.source].join(" ").toLowerCase().includes(q))&&(!p||e.project===p)&&(!s||e.status===s)&&(!d||e.date===d)).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.updated||0)-(a.updated||0));
+}
+function renderEntries(){
+ const es=filteredEntries();
+ $("entriesBody").innerHTML=es.map(e=>`<tr>
+ <td>${esc(e.date)}</td><td><strong>${esc(e.project)}</strong><br><span class="sub">${esc(project(e.project))}</span></td>
+ <td><strong>${esc(e.title)}</strong>${e.detail?`<div class="sub">${esc(e.detail).slice(0,110)}${e.detail.length>110?"…":""}</div>`:""}</td>
+ <td><span class="status ${statusClass(e.status)}">${esc(e.status)}</span></td><td>${esc(e.source||"-")}</td>
+ <td class="no-print"><div class="actions"><button class="btn small" data-edit="${esc(e.id)}">수정</button><button class="btn small danger" data-delete="${esc(e.id)}">삭제</button></div></td></tr>`).join("");
+ $("entriesEmpty").classList.toggle("hidden",es.length>0);
+ $("entriesBody").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editEntry(b.dataset.edit)));
+ $("entriesBody").querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",()=>deleteEntry(b.dataset.delete)));
+}
+function renderProjects(){
+ $("projectCards").innerHTML=data.projects.map(p=>{
+ const count=data.entries.filter(e=>e.project===p.code).length;
+ return `<div class="card project"><div><strong>${esc(p.code)} · ${esc(p.name)}</strong><small>${esc(p.desc||"")}<br>업무 ${count}건</small></div>${p.builtIn?'<span class="status">기본</span>':`<button class="btn small danger" data-remove-project="${esc(p.code)}">삭제</button>`}</div>`;
+ }).join("");
+ $("projectCards").querySelectorAll("[data-remove-project]").forEach(b=>b.addEventListener("click",()=>{
+ const code=b.dataset.removeProject;
+ if(data.entries.some(e=>e.project===code)){alert("이 프로젝트에 연결된 업무 기록이 있어 삭제할 수 없습니다.");return;}
+ if(confirm(code+" 프로젝트를 삭제할까요?")){data.projects=data.projects.filter(p=>p.code!==code);save();}
+ }));
+}
+function renderAll(){populateProjects();renderDashboard();renderEntries();renderProjects();$("storageInfo").textContent=`현재 저장된 업무 ${data.entries.length}건 · 프로젝트 ${data.projects.length}개 · 저장소 localStorage`;}
+function openEntry(){ $("entryForm").reset();$("entryId").value="";$("entryDate").value=today();$("entryStatus").value="진행";$("entrySource").value="ChatGPT";$("entryModalTitle").textContent="새 업무 등록";$("entryModal").classList.add("show");}
+function editEntry(id){
+ const e=data.entries.find(x=>x.id===id);if(!e)return;
+ $("entryId").value=e.id;$("entryDate").value=e.date;$("entryProject").value=e.project;$("entryTitle").value=e.title;
+ $("entryStatus").value=e.status;$("entrySource").value=e.source||"기타";$("entryDetail").value=e.detail||"";
+ $("entryResult").value=e.result||"";$("entryNext").value=e.next||"";$("entryLocation").value=e.location||"";
+ $("entryModalTitle").textContent="업무 수정";$("entryModal").classList.add("show");
+}
+function deleteEntry(id){if(!confirm("이 업무 기록을 삭제할까요?"))return;data.entries=data.entries.filter(e=>e.id!==id);save();}
+function closeEntry(){$("entryModal").classList.remove("show");}
+$("entryForm").addEventListener("submit",ev=>{
+ ev.preventDefault();
+ const id=$("entryId").value,old=data.entries.find(e=>e.id===id);
+ const e={id:id||uid(),date:$("entryDate").value,project:$("entryProject").value,title:$("entryTitle").value.trim(),
+ status:$("entryStatus").value,source:$("entrySource").value,detail:$("entryDetail").value.trim(),
+ result:$("entryResult").value.trim(),next:$("entryNext").value.trim(),location:$("entryLocation").value.trim(),
+ created:old?.created||Date.now(),updated:Date.now()};
+ if(!e.title){alert("업무명을 입력하세요.");return;}
+ if(old)data.entries=data.entries.map(x=>x.id===id?e:x);else data.entries.push(e);
+ closeEntry();save();
+});
+["closeEntry","cancelEntry"].forEach(id=>$(id).addEventListener("click",closeEntry));
+$("entryModal").addEventListener("click",e=>{if(e.target===$("entryModal"))closeEntry();});
+["addEntry","quickAdd"].forEach(id=>$(id).addEventListener("click",openEntry));
+["searchEntries","filterProject","filterStatus","filterDate"].forEach(id=>$(id).addEventListener("input",renderEntries));
+$("clearFilters").addEventListener("click",()=>{["searchEntries","filterProject","filterStatus","filterDate"].forEach(id=>$(id).value="");renderEntries();});
+$("addProject").addEventListener("click",()=>{$("projectForm").reset();$("projectModal").classList.add("show");});
+function closeProject(){$("projectModal").classList.remove("show");}
+["closeProject","cancelProject"].forEach(id=>$(id).addEventListener("click",closeProject));
+$("projectModal").addEventListener("click",e=>{if(e.target===$("projectModal"))closeProject();});
+$("projectForm").addEventListener("submit",e=>{
+ e.preventDefault();const code=$("projectCode").value.trim().toUpperCase(),name=$("projectName").value.trim();
+ if(data.projects.some(p=>p.code.toLowerCase()===code.toLowerCase())){alert("이미 사용 중인 프로젝트 코드입니다.");return;}
+ data.projects.push({code,name,desc:$("projectDesc").value.trim(),builtIn:false});closeProject();save();
+});
+let aiParsed=[];
+const AI_PROMPT=`아래 대화 내용을 업무관리 시스템에 등록할 수 있도록 실제 수행한 업무만 추려 정리해줘. 아이디어·질문·검토만 한 내용은 완료 실적으로 과장하지 말고, 중복 업무는 하나로 합쳐줘. 추측하지 말고 확인되지 않은 값은 비워둬. 업무가 여러 개면 각각 [업무 기록] 블록으로 나눠줘. 아래 형식을 반드시 지켜줘.
+
+[업무 기록]
+업무 날짜: YYYY-MM-DD
+프로젝트: P01~P09 코드와 프로젝트명 (확실하지 않으면 미분류)
+업무명: 한 줄
+진행 상태: 예정 / 진행 / 완료 / 보류
+세부 수행 내용: 실제 수행 내용
+주요 성과: 확인된 결과물이나 성과
+후속 작업: 남은 일
+원본 위치: 대화 제목 또는 URL (없으면 비움)
+
+[원문]
+여기에 AI 대화 내용을 붙여넣어 정리`;
+function normalizeProject(raw,text){
+ const v=(raw||"")+" "+(text||"");
+ const m=v.match(/P0?[1-9]/i);if(m&&data.projects.some(p=>p.code===m[0].toUpperCase()))return m[0].toUpperCase();
+ const rules=[[/MOMO|모모|캐릭터|캐릭터 IP/i,"P04"],[/쓸모생각|쓸모없는 생각|에세이|와디즈|출판/i,"P05"],[/글러브|야구 글러브|baseball glove|reddit.*glove|블로그스팟/i,"P02"],[/eBay|이베이|해외 판매|온라인 판매|스토어|배송|상품 판매/i,"P06"],[/랜디벗|랜디 봇|외부 협업|검수 담당/i,"P08"],[/Suno|음원|음악|작곡|노래|AMT/i,"P09"],[/AI 교육|콘텐츠 제작|SNS 마케팅|당근 홍보|강의/i,"P03"],[/업무관리|자동화|AI 데이터|마스터 템플릿|웹앱|HTML|JavaScript/i,"P07"],[/WAKEUPKIM|YM WORKS|허브 홈페이지|로고|브랜드 디자인/i,"P01"]];
+ for(const [re,code] of rules)if(re.test(v))return code;
+ return "미분류";
+}
+function parseLabeledBlock(block,idx){
+ const aliases={date:["업무 날짜","날짜","일자","date"],project:["프로젝트","프로젝트 코드","project"],title:["업무명","업무 제목","제목","task","title"],status:["진행 상태","상태","status"],detail:["세부 수행 내용","수행 내용","업무 내용","상세","detail"],result:["주요 성과","성과","결과","result"],next:["후속 작업","다음 작업","미완료","next"],location:["원본 위치","원본","출처 위치","링크","location"]};
+ const out={};let current="";
+ for(const line of block.split(/\r?\n/)){
+  const m=line.match(/^\s*([^:：]{1,30})\s*[:：]\s*(.*)$/);
+  if(m){const key=m[1].trim().toLowerCase();let found="";for(const [k,arr] of Object.entries(aliases))if(arr.some(a=>a.toLowerCase()===key)){found=k;break;}if(found){current=found;out[found]=m[2].trim();continue;}}
+  if(current&&line.trim())out[current]=(out[current]?out[current]+"\n":"")+line.trim();
+ }
+ const raw=block.trim();
+ if(!out.title){const first=raw.split(/\r?\n/).map(x=>x.trim()).find(x=>x&&!/^\[업무/.test(x)&&!/^([^:：]{1,30})\s*[:：]/.test(x));out.title=(first||out.detail?.split(/\r?\n/)[0]||`가져온 업무 ${idx+1}`).replace(/^[-#*\d. ]+/,"").slice(0,120);}
+ const text=[out.title,out.detail,out.result,out.next,raw].join(" ");
+ let status=(out.status||"진행").trim();if(/완료|done|complete/i.test(status))status="완료";else if(/보류|hold|중단/i.test(status))status="보류";else if(/예정|계획|todo/i.test(status))status="예정";else status="진행";
+ const date=(out.date||"").match(/20\d{2}[-./]\d{1,2}[-./]\d{1,2}/)?.[0].replace(/[./]/g,"-")||$("aiDefaultDate").value||today();
+ const projectCode=normalizeProject(out.project,text);
+ return {tempId:uid(),selected:true,date,project:projectCode,title:out.title.trim().slice(0,120),status,source:$('aiSource').value,detail:out.detail||raw,result:out.result||"",next:out.next||"",location:out.location||""};
+}
+function parseAIText(raw){
+ const trimmed=raw.trim();if(!trimmed)return [];
+ if(trimmed.startsWith("{")||trimmed.startsWith("[")){
+  try{let j=JSON.parse(trimmed);if(!Array.isArray(j))j=j.records||j.entries||[j];return j.map((o,i)=>parseLabeledBlock(Object.entries(o).map(([k,v])=>`${k}: ${v}`).join("\n"),i));}catch(e){}
+ }
+ let blocks=trimmed.split(/(?=^\s*\[업무(?:\s*기록)?\]\s*$)/m).map(x=>x.trim()).filter(Boolean);
+ blocks=blocks.map(x=>x.replace(/^\s*\[업무(?:\s*기록)?\]\s*/m,""));
+ if(!blocks.length)blocks=[trimmed];
+ return blocks.map((b,i)=>parseLabeledBlock(b,i));
+}
+function isDuplicateCandidate(e){return data.entries.some(x=>x.date===e.date&&x.project===e.project&&x.title.replace(/\s/g,"").toLowerCase()===e.title.replace(/\s/g,"").toLowerCase());}
+function renderAiPreview(){
+ const box=$("aiPreviewCard");box.classList.toggle("hidden",!aiParsed.length);
+ $("aiPreviewSummary").textContent=`${aiParsed.length}건 분석 · ${aiParsed.filter(x=>isDuplicateCandidate(x)).length}건 중복 가능성`;
+ $("aiPreviewList").innerHTML=aiParsed.map((e,i)=>`<div class="card" style="margin-bottom:10px;padding:12px"><div class="actions" style="justify-content:space-between;align-items:center"><label style="display:flex;gap:8px;align-items:center;margin:0"><input type="checkbox" data-ai-select="${i}" ${e.selected?"checked":""} style="width:auto"> 항목 ${i+1}</label><span class="status ${statusClass(e.status)}">${esc(e.status)}</span>${isDuplicateCandidate(e)?'<span class="status hold">중복 확인</span>':''}</div><div class="form-grid" style="margin-top:10px"><div><label>날짜</label><input type="date" data-ai-field="date" data-ai-index="${i}" value="${esc(e.date)}"></div><div><label>프로젝트</label><select data-ai-field="project" data-ai-index="${i}">${'<option value="미분류">미분류</option>'+data.projects.map(p=>`<option value="${esc(p.code)}">${esc(p.code)} · ${esc(p.name)}</option>`).join("")}</select></div><div class="field full"><label>업무명</label><input data-ai-field="title" data-ai-index="${i}" value="${esc(e.title)}"></div><div><label>상태</label><select data-ai-field="status" data-ai-index="${i}">${["예정","진행","완료","보류"].map(x=>`<option ${e.status===x?"selected":""}>${x}</option>`).join("")}</select></div><div><label>출처</label><input data-ai-field="source" data-ai-index="${i}" value="${esc(e.source)}"></div><div class="field full"><label>세부 수행 내용</label><textarea data-ai-field="detail" data-ai-index="${i}">${esc(e.detail)}</textarea></div><div class="field full"><label>주요 성과</label><textarea data-ai-field="result" data-ai-index="${i}">${esc(e.result)}</textarea></div><div class="field full"><label>후속 작업</label><textarea data-ai-field="next" data-ai-index="${i}">${esc(e.next)}</textarea></div><div class="field full"><label>원본 위치</label><input data-ai-field="location" data-ai-index="${i}" value="${esc(e.location)}"></div></div></div>`).join("");
+ $("aiPreviewList").querySelectorAll("[data-ai-field]").forEach(el=>{const i=Number(el.dataset.aiIndex),k=el.dataset.aiField;el.value=aiParsed[i][k]??"";el.addEventListener("input",()=>aiParsed[i][k]=el.value);});
+ $("aiPreviewList").querySelectorAll("[data-ai-select]").forEach(el=>el.addEventListener("change",()=>aiParsed[Number(el.dataset.aiSelect)].selected=el.checked));
+}
+function analyzeAIInput(){try{aiParsed=parseAIText($("aiRawInput").value);if(!aiParsed.length){alert("분석할 텍스트를 입력하세요.");return;}renderAiPreview();}catch(e){alert("내용을 분석하지 못했습니다: "+e.message);}}
+function saveAIEntries(){
+ const selected=aiParsed.filter(x=>x.selected);if(!selected.length){alert("등록할 항목을 선택하세요.");return;}
+ const fresh=selected.filter(x=>!isDuplicateCandidate(x));const duplicates=selected.length-fresh.length;
+ if(!fresh.length){alert("선택한 항목이 모두 기존 기록과 중복될 가능성이 있습니다. 업무 기록에서 확인하세요.");return;}
+ const msg=`선택 ${selected.length}건 중 신규 등록 대상 ${fresh.length}건${duplicates?`, 중복 가능성 ${duplicates}건 제외`:""}. 등록할까요?`;
+ if(!confirm(msg))return;
+ const now=Date.now();fresh.forEach(e=>data.entries.push({id:uid(),date:e.date,project:e.project,title:e.title,status:e.status,source:e.source,detail:e.detail,result:e.result,next:e.next,location:e.location,created:now,updated:now}));
+ if(save()){alert(`${fresh.length}건을 업무 기록에 등록했습니다.`);aiParsed=[];$("aiRawInput").value="";renderAiPreview();showView("entries");}
+}
+$("copyAiPrompt").addEventListener("click",async()=>{const raw=$("aiRawInput").value.trim();if(!raw){alert("먼저 AI 대화 원문을 입력란에 붙여넣으세요.");return;}const prompt=AI_PROMPT.replace("여기에 AI 대화 내용을 붙여넣어 정리",raw);try{await navigator.clipboard.writeText(prompt);alert("원문이 포함된 정리 지시문을 복사했습니다. ChatGPT·Gemini·Claude에 붙여넣으세요.");}catch(e){alert("클립보드 접근이 제한되었습니다. 브라우저 권한을 확인하세요.");}});
+$("parseAiInput").addEventListener("click",analyzeAIInput);
+$("clearAiInput").addEventListener("click",()=>{$("aiRawInput").value="";aiParsed=[];renderAiPreview();});
+$("saveAiEntries").addEventListener("click",saveAIEntries);
+$("selectAllAi").addEventListener("click",()=>{aiParsed.forEach(x=>x.selected=true);renderAiPreview();});
+$("deselectAllAi").addEventListener("click",()=>{aiParsed.forEach(x=>x.selected=false);renderAiPreview();});
+$("aiDefaultDate").value=today();
+
+function isoDate(d){return d.toLocaleDateString("en-CA");}
+function getRange(){
+ const type=$("reportType").value,base=new Date(($("reportDate").value||today())+"T12:00:00");
+ if(type==="daily")return {start:isoDate(base),end:isoDate(base),label:isoDate(base)};
+ if(type==="weekly"){
+  const day=(base.getDay()+6)%7,start=new Date(base);start.setDate(base.getDate()-day);
+  const end=new Date(start);end.setDate(start.getDate()+6);
+  return {start:isoDate(start),end:isoDate(end),label:`${isoDate(start)} ~ ${isoDate(end)}`};
+ }
+ if(type==="monthly"){
+  const start=new Date(base.getFullYear(),base.getMonth(),1),end=new Date(base.getFullYear(),base.getMonth()+1,0);
+  return {start:isoDate(start),end:isoDate(end),label:`${base.getFullYear()}년 ${base.getMonth()+1}월`};
+ }
+ const start=$("reportStart").value,end=$("reportEnd").value;
+ return {start,end,label:`${start} ~ ${end}`};
+}
+function generateReport(){
+ const r=getRange();if(!r.start||!r.end){$("reportOutput").textContent="시작일과 종료일을 지정하세요.";return;}
+ if(r.start>r.end){$("reportOutput").textContent="시작일은 종료일보다 늦을 수 없습니다.";return;}
+ const es=data.entries.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date)||a.project.localeCompare(b.project));
+ const typeName={daily:"일일 업무보고",weekly:"주간 업무보고",monthly:"월간 업무보고",custom:"기간 업무보고"}[$("reportType").value];
+ const lines=[`통합 ${typeName}`,`기간: ${r.label}`,`작성일: ${today()}`,"","1. 업무 현황",`- 전체 등록: ${es.length}건`,`- 완료: ${es.filter(e=>e.status==="완료").length}건`,`- 진행: ${es.filter(e=>e.status==="진행").length}건`,`- 예정: ${es.filter(e=>e.status==="예정").length}건`,`- 보류: ${es.filter(e=>e.status==="보류").length}건`,""];
+ if(!es.length)lines.push("해당 기간에 등록된 업무가 없습니다.");
+ else{
+  lines.push("2. 프로젝트별 수행 업무");
+  data.projects.forEach(p=>{
+   const group=es.filter(e=>e.project===p.code);if(!group.length)return;
+   lines.push("",`[${p.code}] ${p.name}`);
+   group.forEach((e,i)=>{
+    lines.push(`${i+1}. ${e.title} (${e.date} / ${e.status})`);
+    if(e.detail)lines.push(`   수행 내용: ${e.detail}`);
+    if(e.result)lines.push(`   주요 성과: ${e.result}`);
+    if(e.next)lines.push(`   후속 작업: ${e.next}`);
+    if(e.source)lines.push(`   작업 출처: ${e.source}`);
+    if(e.location)lines.push(`   원본 위치: ${e.location}`);
+   });
+  });
+  const next=es.filter(e=>e.next).map(e=>`- [${e.project}] ${e.title}: ${e.next}`);
+  lines.push("","3. 미완료 및 후속 작업",...(next.length?next:["- 별도 기록 없음"]));
+ }
+ lines.push("","4. 종합 의견","- 등록된 실제 업무 기록을 기준으로 자동 집계한 보고서입니다.","- 기록되지 않은 업무나 성과는 포함하지 않습니다.");
+ $("reportOutput").textContent=lines.join("\n");
+}
+$("reportType").addEventListener("change",()=>{
+ $("customDates").classList.toggle("hidden",$("reportType").value!=="custom");
+ generateReport();
+});
+$("reportDate").value=today();$("reportStart").value=today();$("reportEnd").value=today();
+$("generateReport").addEventListener("click",generateReport);
+$("copyReport").addEventListener("click",async()=>{
+ const text=$("reportOutput").textContent;
+ try{await navigator.clipboard.writeText(text);alert("보고서 텍스트를 복사했습니다.");}
+ catch(e){const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();alert("보고서 텍스트를 복사했습니다.");}
+});
+$("downloadTxt").addEventListener("click",()=>{
+ const blob=new Blob(["\ufeff"+$("reportOutput").textContent],{type:"text/plain;charset=utf-8"});
+ downloadBlob(blob,`업무보고_${today()}.txt`);
+});
+$("printReport").addEventListener("click",()=>window.print());
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+function exportJSON(){
+ const payload={app:"WAKEUPKIM WORKS",version:appVersion,exportedAt:new Date().toISOString(),entries:data.entries,projects:data.projects};
+ downloadBlob(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),`WAKEUPKIM_WORKS_backup_${today()}.json`);
+}
+["exportBtn","settingsExport"].forEach(id=>$(id).addEventListener("click",exportJSON));
+function chooseImport(){$("importFile").click();}
+["importBtn","settingsImport"].forEach(id=>$(id).addEventListener("click",chooseImport));
+$("importFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const obj=JSON.parse(await file.text());
+  if(!obj||!Array.isArray(obj.entries)||!Array.isArray(obj.projects))throw new Error("형식이 올바르지 않습니다.");
+  if(!confirm(`백업 파일의 업무 ${obj.entries.length}건과 프로젝트 ${obj.projects.length}개를 불러옵니다. 현재 데이터는 백업 내용으로 대체됩니다. 계속할까요?`))return;
+  data={version:1,entries:obj.entries,projects:obj.projects};save();alert("백업 데이터를 복원했습니다.");
+ }catch(err){alert("복원 실패: "+err.message);}
+ finally{e.target.value="";}
+});
+$("resetData").addEventListener("click",()=>{
+ if(!confirm("현재 브라우저에 저장된 모든 업무 기록과 사용자 프로젝트를 삭제합니다. 계속할까요?"))return;
+ if(!confirm("되돌릴 수 없습니다. JSON 백업을 완료했는지 확인했습니까?"))return;
+ data={version:1,entries:[],projects:defaults.map(x=>({...x}))};save();alert("초기화했습니다.");
+});
+$("infoBtn").addEventListener("click",openMasterInfo);
+$("checkBtn").addEventListener("click",runRuleCheck);
+$("resetBtn").addEventListener("click",resetInterface);
+$("versionBtn").addEventListener("click",openVersion);
+$("applyVersion").addEventListener("click",applyVersion);
+$("hubBtn").addEventListener("click",openMasterInfo);
+$("closeMasterModal").addEventListener("click",()=>$("masterModal").classList.remove("show"));
+$("closeVersionModal").addEventListener("click",()=>$("versionModal").classList.remove("show"));
+$("masterModal").addEventListener("click",e=>{if(e.target===$("masterModal"))$("masterModal").classList.remove("show");});
+$("versionModal").addEventListener("click",e=>{if(e.target===$("versionModal"))$("versionModal").classList.remove("show");});
+document.querySelectorAll("[data-version]").forEach(b=>b.addEventListener("click",()=>{selectedVersionType=b.dataset.version;previewVersion();}));
+updateVersionUI();
+renderAll();generateReport();
+})();
+</script>
+</body>
+</html>
